@@ -6,8 +6,9 @@ python manage.py migrate
 
 echo "
 import os
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 User.objects.create_superuser(
     os.getenv('ADMIN_USERNAME'),
     os.getenv('ADMIN_EMAIL'),

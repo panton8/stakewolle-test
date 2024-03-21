@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  menu_db:
-    container_name: menu_db
+  stakewolle_db:
+    container_name: stakewolle_db
     image: postgres
     environment:
       - POSTGRES_DB=postgres
@@ -13,8 +13,8 @@ services:
     volumes:
       - ./data/db:/var/lib/postgresql/data
 
-  menu_app:
-    container_name: menu_app
+  stakewolle_app:
+    container_name: stakewolle_app
     build: .
     entrypoint: ["/app/entrypoint-django.sh"]
     ports:
@@ -24,7 +24,7 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - menu_db
+      - stakewolle_db
 
 
 
