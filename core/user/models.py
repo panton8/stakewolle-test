@@ -62,7 +62,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(db_index=True, unique=True)
 
-    referral_code = models.CharField(max_length=8, unique=True, null=True, blank=True)
+    referral_code = models.OneToOneField('ReferralCode', on_delete=models.SET_NULL, null=True, blank=True)
+    bonus = models.IntegerField(default=0)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -82,3 +83,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def name(self):
         return f"{self.first_name} {self.last_name}"
+
+
+class ReferralCode(models.Model):
+    code = models.CharField(max_length=8, unique=True)
+    valid_until = models.DateTimeField()
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_codes')
+
+
+class Referral(models.Model):
+    referrer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='referrals_made')
+    referred_user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='referral')
+    created_at = models.DateTimeField(auto_now_add=True)
