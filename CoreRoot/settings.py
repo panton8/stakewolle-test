@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'core.auth',
 
     'rest_framework',
+    'drf_yasg',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
