@@ -38,6 +38,7 @@ class RegisterSerializer(UserSerializer):
                     user.delete()
                     raise serializers.ValidationError("Referral code has expired or is invalid.")
             except ReferralCode.DoesNotExist:
+                user.delete()
                 raise serializers.ValidationError("Referral code not found.")
 
         return user
