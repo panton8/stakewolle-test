@@ -28,6 +28,20 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return obj
 
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        if request.user.id != instance.id:
+            return Response({'error': 'You are not allowed to modify other users\' profiles.'},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
 
 class ReferralCodeViewSet(viewsets.ModelViewSet):
     queryset = ReferralCode.objects.all()
@@ -54,6 +68,7 @@ class ReferralViewSet(viewsets.ModelViewSet):
     queryset = ReferralRelationship.objects.all()
     serializer_class = ReferralSerializer
     permission_classes = [IsAuthenticated]
+    http_method_names = ('get',)
 
     def get_queryset(self):
         return self.queryset.filter(referrer=self.request.user)

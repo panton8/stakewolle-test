@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from core.user.models import User, ReferralCode, ReferralRelationship
+from django.core.validators import MinValueValidator, MaxValueValidator
 import random
 import string
 from django.utils import timezone
@@ -16,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'last_name', 'email', 'is_active',
                   'created', 'updated', 'referral_code', 'bonus'
                   ]
-        read_only_fields = ['is_active']
+        read_only_fields = ['is_active', 'referral_code', 'bonus']
 
 
 class ReferralCodeSerializer(serializers.ModelSerializer):
@@ -32,7 +33,10 @@ class AddReferralCodeSerializer(serializers.ModelSerializer):
     code = serializers.CharField(read_only=True)
     valid_until = serializers.DateTimeField(read_only=True)
     creator = serializers.CharField(read_only=True)
-    valid_days = serializers.IntegerField(write_only=True)
+    valid_days = serializers.IntegerField(write_only=True, validators=[
+            MinValueValidator(1, message="Value must be greater than or equal to 1"),
+            MaxValueValidator(31, message="Value must be less than or equal to 31")
+        ])
 
     class Meta:
         model = ReferralCode
