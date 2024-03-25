@@ -1,7 +1,7 @@
 from rest_framework import routers
 
 from core.auth.viewsets import RegisterViewSet, LoginViewSet, RefreshViewSet
-from core.user.viewsets import UserViewSet, ReferralCodeViewSet, ReferralViewSet, ShareRefCodeViewSet
+from core.user.viewsets import UserViewSet, ReferralCodeViewSet, ReferralViewSet, ShareRefCodeViewSet, UnpinRefCodeViewSet
 
 router = routers.SimpleRouter()
 
@@ -12,6 +12,6 @@ router.register(r'auth/register', RegisterViewSet, basename='auth-register')
 router.register(r'auth/login', LoginViewSet, basename='auth-login')
 router.register(r'auth/refresh', RefreshViewSet, basename='auth-refresh')
 router.register(r'share', ShareRefCodeViewSet, basename='share-code')
+router.register(r'referral_code', UnpinRefCodeViewSet, basename='unpin-code')
 
 urlpatterns = [*router.urls]
-
