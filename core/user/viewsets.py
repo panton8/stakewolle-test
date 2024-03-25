@@ -1,4 +1,5 @@
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from core.user.serializers import (UserSerializer, ReferralCodeSerializer, AddReferralCodeSerializer, ReferralSerializer,
@@ -105,3 +106,16 @@ class ShareRefCodeViewSet(viewsets.ViewSet):
                 return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UnpinRefCodeViewSet(viewsets.ViewSet):
+    @action(detail=False, methods=['delete'])
+    def delete_code(self, request):
+        user = request.user
+        referral_code = user.referral_code
+        if referral_code:
+            referral_code.delete()
+            return Response({"message": "Referral code deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message": "No referral code found. Please create a referral code first."},
+                            status=status.HTTP_400_BAD_REQUEST)
